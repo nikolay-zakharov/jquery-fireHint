@@ -7,41 +7,71 @@
  */
 
 (function($) {
-	$.fn.fireHint = function(config) {
+	$.fn.fireHint = function(custom_config) {
 
-		var config = {
-			times: 50,
-			css: {
-				top: '30px',
-				left: '350px'
+		var default_config = {
+			timings: {
+				hide: 15000,
+				fade: 50
+			},
+			position: {
+				top: 30,
+				left: 350
 			}
 		};
+		var config = $.extend(true, default_config, custom_config);
 
-		return this.each(function(ind, elem) {
-			//window.setTimeout(function(){ $(elem).hide(config.hideAnimation); }, 1500);
+		function get_element_behind(evt, current_element){
+			$(current_element).hide();
+			var elementBehind = document.elementFromPoint(evt.pageX, evt.pageY);
+			$(current_element).show();
+			return elementBehind;
+		}
 
-			$(elem)
-				.css(config.css)
-				.bind('click dblclick mouseenter mouseleave mouseover mouseout', function(evt){
-					evt.preventDefault();
-					$(this).hide();
-					var elementBehind = document.elementFromPoint(evt.pageX, evt.pageY);
-					$(this).show();
+		return this.each(function(ind, msg_box_blank_element) {
+			var msg_box_element = $(msg_box_blank_element).clone().appendTo(document.body);
 
-					$(elementBehind).trigger(evt.type);
-					if(evt.type == 'click' && elementBehind.tagName == 'A' && typeof $(elementBehind).attr('href') != 'undefined')
-						document.location.href = $(elementBehind).attr('href');
-				})
-				.bind('selectstart', function(evt){
-					evt.preventDefault();
-				})
-				.bind('mouseenter', function(evt){
-					$(evt.target).animate({ opacity: 0.2 }, config.times);
-				})
-				.bind('mouseleave', function(evt){
-					$(evt.target).animate({ opacity: 0.9 }, config.times);
-				})
+			var current_box_interval = window.setTimeout(function(){ $(msg_box_element).fadeOut().remove(); }, config.timings.hide);
+			if(typeof document.fireHint == 'undefined')
+				document.fireHint = {
+					intervals: {}
+				};
+			if(typeof document.fireHint.intervals[this] != 'undefined'){
+				window.clearInterval(document.fireHint.intervals[this]);
+				document.fireHint.intervals[this] = undefined;
+			}
+			document.fireHint.intervals[this] = current_box_interval;
+
+			$(msg_box_element)
+				.css({ opacity: 0.9 })
+				.data('last_element_behind', null)// Stores last element on the background having mouse focus
 				.addClass('firehint-msg-box')
+				.css({
+					top: config.position.top+'px',
+					left: config.position.left+'px'
+				})// Implement custom css for messagebox
+				.bind('click dblclick', function(evt){// Delegate click & double-click events to a background element
+					evt.preventDefault();
+					var element_behind = get_element_behind(evt, this);
+					$(element_behind).trigger(evt.type);
+					if(evt.type == 'click' && element_behind.tagName == 'A' && typeof $(element_behind).attr('href') != 'undefined')
+						document.location.href = $(element_behind).attr('href');
+				})
+				.bind('selectstart', function(evt){ evt.preventDefault(); })// Disables an ability to select text at msg box
+				.bind('mouseenter', function(evt){ $(evt.target).animate({ opacity: 0.2 }, config.timings.fade); })
+				.bind('mouseleave', function(evt){ $(evt.target).animate({ opacity: 0.9 }, config.timings.fade); })
+				.bind('mousemove', function(evt){// Watches mouse movements to delegate mouseEnter and mouseLeave events
+					// Detects whether mouse focus switched to another background element and runs appropriate triggers
+					var element_behind = get_element_behind(evt, this),
+						last_element_behind = $(this).data('last_element_behind');
+					if(last_element_behind != element_behind
+							&& $(element_behind).parents('.firehint-msg-box').length==0
+							&& $(last_element_behind).filter('.firehint-msg-box').length==0){
+						$(last_element_behind).trigger('mouseleave');
+						$(element_behind).trigger('mouseenter');
+						$(this).data('last_element_behind', element_behind);
+					}
+				})
 				.show();
 		});
 	}

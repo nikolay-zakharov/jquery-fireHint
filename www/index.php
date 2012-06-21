@@ -19,7 +19,14 @@
 			});
 		});
 
-		function fire(){ $('#fire1').fireHint(); }
+		function fire(){
+			$('#fire1').fireHint({
+				position: {
+					top: Math.round(Math.random()*400)-(-100),
+					left: Math.round(Math.random()*800)
+				}
+			});
+		}
 
 	</script>
 </head><body>
