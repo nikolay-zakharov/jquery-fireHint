@@ -9,18 +9,34 @@
 
 	<!-- general -->
 	<script type="text/javascript">
+		$(document).ready(function(){
+			$('table#tbl1 td').bind('mouseenter mouseleave', function(evt){
+				$(this).css({
+					'background-color': evt.type == 'mouseenter'
+						? '#eee'
+						: ''
+				});
+			});
+		});
 
-		function fire(){
-			$('#fire1').fireHint();
-		}
+		function fire(){ $('#fire1').fireHint(); }
 
 	</script>
 </head><body>
-	<div id="fire1" data-title="Title for a box" style="display: none;">
+	<div id="fire1" style="display: none;">
+		<strong class="firehint-header">Hint box title</strong>
 		<div class="firehint-content-body">
-			Dialog box Content
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
 		</div>
 	</div>
-
+	<table id="tbl1" cellpadding="10" cellspacing="12" border="1" width="700px">
+		<tbody>
+		<tr>
+			<td>fdsfasda dfsdfad sfasfasdfdsf asd fasd fasd fasd fads fasdf asd ffa</td>
+			<td>rt ewrt ewrt ewrt wertw ertret wert wert ewrt wert wertewr t</td>
+			<td>sdfa sdfsd fasd fdsf <a href="#go-first">dfsdfasdfsdafasdf</a> df <a href="#go-second">dsfsdfasdf</a> asd fasdf asdf asdf </td>
+		</tr>
+		</tbody>
+	</table>
 	<button onclick="fire();">Fire an event</button>
 </body></html>

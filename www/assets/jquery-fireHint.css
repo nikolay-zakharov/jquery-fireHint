@@ -1,14 +1,17 @@
 .firehint-msg-box {
-	background-color: #ddd;
+	background-color: #2c2c2c;
 	border: 1px solid #aaa;
-	border-radius: 4px;
-	box-shadow: 2px 2px 22px rgba(100,120,130,0.3);
+	border-radius: 10px;
+	box-shadow: 2px 2px 22px rgba(40,40,40,0.3);
+	color: #fff;
 	cursor: default;
-	left: 200px;
+	height: auto;
+	left: 350px;
 	padding: 10px 20px;
 	position: absolute;
-	text-shadow: 1px 1px 1px rgba(255,255,255,1);
-	top: 70px;
+	text-shadow: 1px 1px 1px rgba(0,0,0,1);
+	top: 40px;
 	text-align: left;
+	width: 300px;
 	z-index: 1000;
 }
