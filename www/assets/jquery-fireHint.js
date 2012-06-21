@@ -11,7 +11,7 @@
 
 		var default_config = {
 			timings: {
-				hide: 15000,
+				hide: 3000,
 				fade: 50
 			},
 			position: {
@@ -29,18 +29,21 @@
 		}
 
 		return this.each(function(ind, msg_box_blank_element) {
-			var msg_box_element = $(msg_box_blank_element).clone().appendTo(document.body);
+			var msg_box_element = $(msg_box_blank_element)
+				.clone()
+				.appendTo(document.body)
+				.data('uid', (new Date()).getTime()+'_'+(Math.round(Math.random()*8999-(-1000))));
 
 			var current_box_interval = window.setTimeout(function(){ $(msg_box_element).fadeOut().remove(); }, config.timings.hide);
 			if(typeof document.fireHint == 'undefined')
 				document.fireHint = {
 					intervals: {}
 				};
-			if(typeof document.fireHint.intervals[this] != 'undefined'){
-				window.clearInterval(document.fireHint.intervals[this]);
-				document.fireHint.intervals[this] = undefined;
+			if(typeof document.fireHint.intervals[$(msg_box_element).data('uid')] != 'undefined'){
+				window.clearInterval(document.fireHint.intervals[$(msg_box_element).data('uid')]);
+				document.fireHint.intervals[$(msg_box_element).data('uid')] = undefined;
 			}
-			document.fireHint.intervals[this] = current_box_interval;
+			document.fireHint.intervals[$(msg_box_element).data('uid')] = current_box_interval;
 
 			$(msg_box_element)
 				.css({ opacity: 0.9 })
