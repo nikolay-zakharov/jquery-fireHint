@@ -22,8 +22,14 @@
 		function fire(){
 			$('#fire1').fireHint({
 				position: {
-					top: Math.round(Math.random()*400)-(-100),
-					left: Math.round(Math.random()*800)
+					//top: Math.round(Math.random()*400)-(-100),
+					//left: Math.round(Math.random()*800)
+					top: 40,
+					left: 300
+				},
+				timings: {
+					hide: 3000000,
+					fade: 50
 				}
 			});
 		}
