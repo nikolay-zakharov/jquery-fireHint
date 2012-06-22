@@ -10,14 +10,13 @@
 	$.fn.fireHint = function(custom_config) {
 
 		var default_config = {
-			timings: {
-				hide: 3000,
-				fade: 50
-			},
-			position: {
-				top: 30,
-				left: 350
-			}
+			title: '- No title specified -',
+			content: $(document.createTextNode('- No content specified -')),
+			timings: { hide: 5000, fade: 50 },
+			position: { minTop: 30, top: 30, left: 30 },
+			auto_scroll_top: true,
+			box_classes: [],
+			title_classes: []
 		};
 		var config = $.extend(true, default_config, custom_config);
 
@@ -77,15 +76,29 @@
 			var current_box_interval = window.setTimeout(function(){ $(msg_box_element).fadeOut().remove(); }, config.timings.hide);
 			if(typeof document.fireHint == 'undefined')
 				document.fireHint = {
-					intervals: {}
+					intervals: {},
+					boxes: {}
 				};
 			if(typeof document.fireHint.intervals[$(msg_box_element).data('uid')] != 'undefined'){
 				window.clearInterval(document.fireHint.intervals[$(msg_box_element).data('uid')]);
 				document.fireHint.intervals[$(msg_box_element).data('uid')] = undefined;
 			}
 			document.fireHint.intervals[$(msg_box_element).data('uid')] = current_box_interval;
+			document.fireHint.boxes[$(msg_box_element).data('uid')] = true;
+
+			console.log('boxes: ', document.fireHint.boxes);
+
+			$.each(config.content, function(content_ind, content_item){
+				$(msg_box_element).find('.firehint-content-body').append(content_item);
+			});
+
+			if(config.box_classes.length > 0)
+				$.each(config.box_classes, function(add_class_ind, add_class_item){ $(msg_box_element).addClass(add_class_item); });
+			if(config.title_classes.length > 0)
+				$.each(config.title_classes, function(add_class_ind, add_class_item){ $(msg_box_element).find('.firehint-header').addClass(add_class_item); });
 
 			$(msg_box_element)
+				.find('.firehint-header').html(config.title).end()
 				.css({ opacity: 0.9 })
 				.data('last_element_behind', null)// Stores last element on the background having mouse focus
 				.addClass('firehint-msg-box')
@@ -93,26 +106,24 @@
 					top: config.position.top+'px',
 					left: config.position.left+'px'
 				})// Implement custom css for messagebox
-				.bind('click dblclick', function(evt){// Delegate click & double-click events to a background element
+				/*.bind('click dblclick', function(evt){// Delegate click & double-click events to a background element
 					evt.preventDefault();
 
 					//var element_behind = get_element_behind(evt, this);
 
-
-
 					// TODO: здесь тоже будет другая функция поиска элемента
 					//get_element_by_pixel(evt.posX, evt.posY);
-
-
-					
 
 					$(element_behind).trigger(evt.type);
 					if(evt.type == 'click' && element_behind.tagName == 'A' && typeof $(element_behind).attr('href') != 'undefined')
 						document.location.href = $(element_behind).attr('href');
-				})
+				})*/
 				.bind('selectstart', function(evt){ evt.preventDefault(); })// Disables an ability to select text at msg box
-				.bind('mouseenter', function(evt){ $(evt.target).animate({ opacity: 0.2 }, config.timings.fade); })
-				.bind('mouseleave', function(evt){ $(evt.target).animate({ opacity: 0.9 }, config.timings.fade); })
+				.bind('mouseenter', function(evt){ $(msg_box_element).animate({ opacity: 0.2 }, config.timings.fade); })
+				.bind('mouseleave', function(evt){
+					$(msg_box_element).animate({ opacity: 0.9 }, config.timings.fade);
+					document.fireHint.boxes[$(msg_box_element).data('uid')] = undefined;
+				})
 				.bind('mousemove', function(evt){// Watches mouse movements to delegate mouseEnter and mouseLeave events
 					// Detects whether mouse focus switched to another background element and runs appropriate triggers
 

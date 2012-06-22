@@ -9,9 +9,22 @@
 	left: 350px;
 	padding: 10px 20px;
 	position: absolute;
-	text-shadow: 1px 1px 1px rgba(0,0,0,1);
+	ext-shadow: 1px 1px 1px rgba(0,0,0,1);
 	top: 40px;
 	text-align: left;
 	width: 300px;
 	z-index: 1000;
 }
+
+.firehint-header {
+	font-size: 18px;
+	clear: both;
+	display: block;
+	margin-bottom: 4px;
+}
+
+.box-error { background-color: #411; }
+.box-error-title { color: #d88; }
+
+.box-success { background-color: #141; }
+.box-success-title { color: #8d8; }
