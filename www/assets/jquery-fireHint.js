@@ -13,59 +13,17 @@
 			title: '- No title specified -',
 			content: $(document.createTextNode('- No content specified -')),
 			timings: { hide: 5000, fade: 50 },
-			position: { minTop: 30, top: 30, left: 30 },
+			position: { minTop: 50, top: 30, left: 30 },
+			box_padding: 30,
+			box_hor_padding: 10,
+			box_width: 352,
+			direction: 'right',
+			rows: 3,
 			auto_scroll_top: true,
 			box_classes: [],
 			title_classes: []
 		};
 		var config = $.extend(true, default_config, custom_config);
-
-
-
-
-
-		// TODO: Неработающая версия. Коммит только для того, чтобы иметь возможность доделать с другого компьютера
-		// TODO: Из задач: доделать функцию обхода элементов с составлением дерева элементов их позиций на странице
-		// TODO: и порядку появления, и реализовать функцию поиска по этому дереву с учетом `z-index`
-		/*var elements_map = {};
-		(function(){// Mapping elements
-			var g = {
-				elem1: {
-					parent: ,
-					x: {
-						min: 100,
-						max: 340
-					},
-					y: {
-						min: 150,
-						max: 220
-					},
-					zIndex: 23
-				}
-			}*/
-
-			/*// Comparison by zIndex is left only: comparison by accurance is automatically done because of recursion
-			var make_all_children_structured = function(elem, parent){
-				parent = Math.round(Math.random()*8999-(-1000));
-				var compare_by_zIndex = function(properties){
-					var uid = (new Date()).getTime()+'_'+(Math.round(Math.random()*8999-(-10000)));
-				};
-				$(elem).children().each(function(ind, elem){
-					var current_element_properties = {
-						height: $(elem).height(),
-						width: $(elem).width(),
-						pos: $(elem).position()
-					};
-					compare_by_zIndex(elem);
-				});
-			};
-			make_all_children_structured($('body').children(':visible').not('.firehint-msg-box'));
-		})();*/
-
-
-
-
-
 
 		return this.each(function(ind, msg_box_blank_element){
 			var msg_box_element = $(msg_box_blank_element)
@@ -73,20 +31,50 @@
 				.appendTo(document.body)
 				.data('uid', (new Date()).getTime()+'_'+(Math.round(Math.random()*8999-(-1000))));
 
-			var current_box_interval = window.setTimeout(function(){ $(msg_box_element).fadeOut().remove(); }, config.timings.hide);
+			var current_box_interval = window.setTimeout(function(){
+				var row_to_scroll = $(msg_box_element).data('row_index'),
+					height_to_scroll = $(document.fireHint.rows[row_to_scroll].message_boxes[$(msg_box_element).data('uid')]).height(),
+					min_top_to_scroll = $(document.fireHint.rows[row_to_scroll].message_boxes[$(msg_box_element).data('uid')]).position().top;
+
+				// TODO: не совсем чистое удаление
+				var current_message_box_height = $(msg_box_element).height();
+				document.fireHint.rows[row_ind].free -= -(config.box_padding - (- current_message_box_height));
+				document.fireHint.rows[row_ind].occupied -= (current_message_box_height - (- config.box_padding));
+				document.fireHint.rows[$(msg_box_element).data('row_index')].message_boxes[$(msg_box_element).data('uid')] = undefined;
+
+				// TODO: scroll top
+				for(var uid in document.fireHint.rows[$(msg_box_element).data('row_index')].message_boxes){
+					var some_message_box = document.fireHint.rows[$(msg_box_element).data('row_index')].message_boxes[uid];
+					if(typeof some_message_box != 'undefined'){
+						some_message_box.animate({
+							top: $(some_message_box).position().top - (config.box_padding - (- current_message_box_height))
+						}, 300);
+					}
+				}
+
+				$(msg_box_element).fadeOut().remove();
+			}, config.timings.hide);
+
 			if(typeof document.fireHint == 'undefined')
 				document.fireHint = {
 					intervals: {},
-					boxes: {}
+					rows: {}
 				};
 			if(typeof document.fireHint.intervals[$(msg_box_element).data('uid')] != 'undefined'){
-				window.clearInterval(document.fireHint.intervals[$(msg_box_element).data('uid')]);
+				window.clearTimeout(document.fireHint.intervals[$(msg_box_element).data('uid')]);
 				document.fireHint.intervals[$(msg_box_element).data('uid')] = undefined;
 			}
 			document.fireHint.intervals[$(msg_box_element).data('uid')] = current_box_interval;
-			document.fireHint.boxes[$(msg_box_element).data('uid')] = true;
 
-			console.log('boxes: ', document.fireHint.boxes);
+			for(var row_ind=1; row_ind<=config.rows; row_ind++){
+				if(typeof document.fireHint.rows[row_ind] == 'undefined'){
+					document.fireHint.rows[row_ind] = {
+						free: $(window).height() - config.position.minTop,
+						occupied: 0,
+						message_boxes: {}
+					};
+				}
+			}
 
 			$.each(config.content, function(content_ind, content_item){
 				$(msg_box_element).find('.firehint-content-body').append(content_item);
@@ -100,55 +88,33 @@
 			$(msg_box_element)
 				.find('.firehint-header').html(config.title).end()
 				.css({ opacity: 0.9 })
-				.data('last_element_behind', null)// Stores last element on the background having mouse focus
 				.addClass('firehint-msg-box')
 				.css({
 					top: config.position.top+'px',
 					left: config.position.left+'px'
-				})// Implement custom css for messagebox
-				/*.bind('click dblclick', function(evt){// Delegate click & double-click events to a background element
-					evt.preventDefault();
-
-					//var element_behind = get_element_behind(evt, this);
-
-					// TODO: здесь тоже будет другая функция поиска элемента
-					//get_element_by_pixel(evt.posX, evt.posY);
-
-					$(element_behind).trigger(evt.type);
-					if(evt.type == 'click' && element_behind.tagName == 'A' && typeof $(element_behind).attr('href') != 'undefined')
-						document.location.href = $(element_behind).attr('href');
-				})*/
+				})
 				.bind('selectstart', function(evt){ evt.preventDefault(); })// Disables an ability to select text at msg box
 				.bind('mouseenter', function(evt){ $(msg_box_element).animate({ opacity: 0.2 }, config.timings.fade); })
-				.bind('mouseleave', function(evt){
-					$(msg_box_element).animate({ opacity: 0.9 }, config.timings.fade);
-					document.fireHint.boxes[$(msg_box_element).data('uid')] = undefined;
-				})
-				.bind('mousemove', function(evt){// Watches mouse movements to delegate mouseEnter and mouseLeave events
-					// Detects whether mouse focus switched to another background element and runs appropriate triggers
-
-
-
-
-
-
-					// TODO: здесь поиск элемента несколько другой будет
-					/*var element_behind = get_element_by_pixel(evt.posX, evt.posY),
-						last_element_behind = $(this).data('last_element_behind');
-					if(last_element_behind != element_behind
-							&& $(element_behind).parents('.firehint-msg-box').length==0
-							&& $(last_element_behind).filter('.firehint-msg-box').length==0){
-						$(last_element_behind).trigger('mouseleave');
-						$(element_behind).trigger('mouseenter');
-						$(this).data('last_element_behind', element_behind);
-					}*/
-
-
-
-
-
-				})
+				.bind('mouseleave', function(evt){ $(msg_box_element).animate({ opacity: 0.9 }, config.timings.fade); })
 				.show();
+
+			var current_message_box_height = $(msg_box_element).height();
+			for(var row_ind=1; row_ind<=config.rows; row_ind++){
+				if(document.fireHint.rows[row_ind].free >= current_message_box_height - (- config.box_padding)){
+					$(msg_box_element).data('row_index', row_ind);
+
+					$(msg_box_element).css({
+						top: (config.position.minTop - (- document.fireHint.rows[row_ind].occupied)) +'px',
+						left: ($(window).width() - (row_ind)*config.box_width - config.box_hor_padding - 10) +'px'
+					});
+
+					document.fireHint.rows[row_ind].free -= current_message_box_height - (- config.box_padding);
+					document.fireHint.rows[row_ind].occupied -= - config.box_padding - current_message_box_height;
+
+					document.fireHint.rows[row_ind].message_boxes[$(msg_box_element).data('uid')] = msg_box_element;
+					break;
+				}
+			}
 		});
 	}
 })(jQuery);
