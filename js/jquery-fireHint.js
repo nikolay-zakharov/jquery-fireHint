@@ -1,6 +1,6 @@
 /*!
  * FireHint plugin for jQuery
- * http://github.com/firehint/
+ * https://github.com/nikolay-zakharov/jquery-fireHint
  *
  * Copyright 2012, Nikolay Zakharov <nickolay.zakharov@gmail.com>
  * Date: Thu June 28 21:44:17 2012 +0400
