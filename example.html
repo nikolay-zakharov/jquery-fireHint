@@ -11,26 +11,68 @@
 	<script type="text/javascript" src="./jquery-fireHint.js"></script>
 	
 	<script type="text/javascript">
-		var msg_box_blank = $(document.createElement('div')).addClass('firehint-msg-box')
-			.append($(document.createElement('strong')).addClass('firehint-header'))
-			.append($(document.createElement('div')).addClass('firehint-content-body'));
-			
-		$(document).ready(function(){
-			$('#btn_run').bind('click', function(evt){
-				$(msg_box_blank).fireHint({
-					elements: {
-						header: [
-							$(document.createTextNode('fireHint header'))
-						],
-						body: [
-							$(document.createElement('div')).html('fireHint message text')
-						]
-					}
+		// This block is about GENERAL HINT
+		{
+			var msg_box_blank = $(document.createElement('div')).addClass('firehint-msg-box')
+				.append($(document.createElement('strong')).addClass('firehint-header'))
+				.append($(document.createElement('div')).addClass('firehint-content-body'));
+
+			$(document).ready(function(){
+				$('#btn_run').on('click', function(evt){
+					$(msg_box_blank).fireHint({
+						elements: {
+							header: [ $(document.createTextNode('fireHint header')) ],
+							body: [ $(document.createElement('div')).html('fireHint message text') ]
+						}
+					});
 				});
 			});
-		});
+		}
+
+
+		// This block is about ICONED HINT
+		{
+			var msg_box_blank = $(document.createElement('div')).addClass('firehint-msg-box')
+					.append($(document.createElement('strong')).addClass('firehint-header'))
+					.append($(document.createElement('div')).addClass('firehint-content-body'));
+
+			$(document).ready(function(){
+				$('#btn_run_with_icon').on('click', function(evt){
+					$(msg_box_blank).fireHint({
+						elements:{
+							header: [],
+							body:[
+								$(document.createElement('div'))
+									.css({
+										width: '64px',
+										clear: 'right',
+										float: 'left'
+									})
+									.append($(document.createElement('img')).attr('src', 'img/icon-64.png')),
+								$(document.createElement('div'))
+									.css({
+										float: 'left',
+										width: '160px',
+										position: 'relative',
+										top: '2px',
+										padding: '4px 20px',
+										textAlign: 'left'
+									})
+									.append($(document.createElement('strong')).html('STRONG header'))
+									.append($(document.createElement('br')))
+									.append($(document.createElement('span')).html('You can try to write here anything you want'))
+							]
+						}
+					});
+				});
+			});
+		}
 	</script>
 </head><body>
+	<!-- GENERAL HINT -->
 	<input id="btn_run" type="button" value="Click for a Hint!" />
+
+	<!-- ICONED HINT -->
+	<input id="btn_run_with_icon" type="button" value="Click for a Hint with ICON" />
 </body></html>
 

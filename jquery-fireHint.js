@@ -12,33 +12,35 @@
 		// Default configuration
 		var default_config = {
 			elements: {
-				header: [],
-				body: []
+				header: [],// DOM elements list that will be placed inside `strong.firehint-header` element of the hint
+				body: []// DOM elements list that will be placed inside `div.firehint-content-body` element of the hint
 			},
 			timeouts: {
-				hide: 5000,
-				slide: 300,
-				fade: 70
+				hide: 5000,// Hint will disapper after (ms)
+				slide: 300,// Hint will get animation for (ms)
+				fade: 70// Hint will disappear during (ms) /starts animation is finished/
 			},
 			rows: {
 				count: 2,
-				position: 'tr',
-				minTop: 20,
-				maxTop: 20
+				position: 'tr',// `tr` means Top-Right. Also available: `tl` (top-left), `br` (bottom-right), `bl` (bottom-left)
+				minTop: 20,// Vertical limits of set of hints
+				maxTop: 20// Vertical limits of set of hints
 			},
 			cells: {
-				margins: {
-					vertical: 30,
-					horizontal: 20
+				margins: {// Gap between hints
+					vertical: 30,// ...vertical
+					horizontal: 20// ,.,horizontal
 				},
 				width: 352
 			},
 			additionalClasses: {
-				'.firehint-msg-box': [],
-				'.firehint-header': [],
-				'.firehint-content-body': []
+				'.firehint-msg-box': [],// You can assign custom css classes for massagebox
+				'.firehint-header': [],// ...or just header
+				'.firehint-content-body': []// ...or just content body
 			},
-			bindings: {
+			bindings: {// Here you can configure custom events. Object mask as a Key and object as a Value.
+			// This object (Value) has event name as a Key and `function(Event){...}` as a Value.
+			// You are able to bind any behaviour to any DOM Object inside main message-box (`.firehint-msg-box`) or to its own
 				'.firehint-msg-box': {
 					selectstart: function(evt){ evt.preventDefault(); },
 					mouseenter: function(evt){ $(evt.target).animate(config.css_states.hover, config.timeouts.fade); },
