@@ -9,17 +9,34 @@
 	<!-- fireHint -->
 	<link rel="stylesheet" type="text/css" href="./jquery-fireHint.css" />
 	<script type="text/javascript" src="./jquery-fireHint.js"></script>
-	
+
+	<style type="text/css">
+		/* Additional classes examples */
+		.box-error { background-color: #411; }
+		.box-error-title { color: #d88; }
+		.box-success { background-color: #141; }
+		.box-success-title { color: #8d8; }
+
+		.shadowed0 {
+			box-shadow: 0 0 40px rgba(255,90,0,1);
+			border-radius: 100px;
+		}
+		.shadowed1 {
+			box-shadow: 0 0 40px rgba(128,180,0,1);
+			border-radius: 2px;
+		}
+	</style>
 	<script type="text/javascript">
-		// This block is about GENERAL HINT
+
+		// Simple
 		{
-			var msg_box_blank = $(document.createElement('div')).addClass('firehint-msg-box')
+			var msg_box_blank_simple = $(document.createElement('div')).addClass('firehint-msg-box')
 				.append($(document.createElement('strong')).addClass('firehint-header'))
 				.append($(document.createElement('div')).addClass('firehint-content-body'));
 
 			$(document).ready(function(){
 				$('#btn_run').on('click', function(evt){
-					$(msg_box_blank).fireHint({
+					$(msg_box_blank_simple).fireHint({
 						elements: {
 							header: [ $(document.createTextNode('fireHint header')) ],
 							body: [ $(document.createElement('div')).html('fireHint message text') ]
@@ -29,16 +46,15 @@
 			});
 		}
 
-
-		// This block is about ICONED HINT
+		// Iconed
 		{
-			var msg_box_blank = $(document.createElement('div')).addClass('firehint-msg-box')
+			var msg_box_blank_iconed = $(document.createElement('div')).addClass('firehint-msg-box')
 					.append($(document.createElement('strong')).addClass('firehint-header'))
 					.append($(document.createElement('div')).addClass('firehint-content-body'));
 
 			$(document).ready(function(){
 				$('#btn_run_with_icon').on('click', function(evt){
-					$(msg_box_blank).fireHint({
+					$(msg_box_blank_iconed).fireHint({
 						elements:{
 							header: [],
 							body:[
@@ -62,6 +78,10 @@
 									.append($(document.createElement('br')))
 									.append($(document.createElement('span')).html('You can try to write here anything you want'))
 							]
+						},
+						additionalClasses: {
+							'.firehint-msg-box': ['shadowed'+Math.round(Math.random())].concat(Math.round(Math.random()) ? ['box-error'] : ['box-success']),
+							'.firehint-header': Math.round(Math.random()) ? ['box-error-header'] : ['box-success-header']
 						}
 					});
 				});

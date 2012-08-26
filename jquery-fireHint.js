@@ -34,7 +34,7 @@
 				width: 352
 			},
 			additionalClasses: {
-				'.firehint-msg-box': [],// You can assign custom css classes for massagebox
+				'.firehint-msg-box': [],// You can assign custom css classes for messagebox
 				'.firehint-header': [],// ...or just header
 				'.firehint-content-body': []// ...or just content body
 			},

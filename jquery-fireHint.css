@@ -21,9 +21,3 @@
 	font-size: 18px;
 	margin-bottom: 4px;
 }
-
-/* Additional classes examples */
-.box-error { background-color: #411; }
-.box-error-title { color: #d88; }
-.box-success { background-color: #141; }
-.box-success-title { color: #8d8; }
