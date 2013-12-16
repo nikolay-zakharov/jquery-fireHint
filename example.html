@@ -3,96 +3,35 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>jquery-fireHint / example</title>
 
-	<!-- jQuery -->
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 	
-	<!-- fireHint -->
 	<link rel="stylesheet" type="text/css" href="./jquery-fireHint.css" />
 	<script type="text/javascript" src="./jquery-fireHint.js"></script>
 
-	<style type="text/css">
-		/* Additional classes examples */
-		.box-error { background-color: #411; }
-		.box-error-title { color: #d88; }
-		.box-success { background-color: #141; }
-		.box-success-title { color: #8d8; }
-
-		.shadowed0 {
-			box-shadow: 0 0 40px rgba(255,90,0,1);
-			border-radius: 100px;
-		}
-		.shadowed1 {
-			box-shadow: 0 0 40px rgba(128,180,0,1);
-			border-radius: 2px;
-		}
-	</style>
 	<script type="text/javascript">
-
-		// Simple
-		{
-			var msg_box_blank_simple = $(document.createElement('div')).addClass('firehint-msg-box')
-				.append($(document.createElement('strong')).addClass('firehint-header'))
-				.append($(document.createElement('div')).addClass('firehint-content-body'));
-
-			$(document).ready(function(){
-				$('#btn_run').on('click', function(evt){
-					$(msg_box_blank_simple).fireHint({
-						elements: {
-							header: [ $(document.createTextNode('fireHint header')) ],
-							body: [ $(document.createElement('div')).html('fireHint message text') ]
-						}
-					});
-				});
+		
+		$(document).on('click','.firehint',function(evt){
+			$.fireHint({
+				elements: {
+					header: [$(document.createTextNode('Сабж '+(new Date)))],
+					body: [
+						$(document.createElement('div')).html('Тестовое сообщение о чем-нибудь')
+					]
+				},
+				events: {
+					'.firehint-message': {
+						click: function(evt){ evt.preventDefault(); },
+						mouseenter: function(evt){ $(this).css({opacity:0.6}); },
+						mouseleave: function(evt){ $(this).css({opacity:0.9}); }
+					}
+				}
 			});
-		}
-
-		// Iconed
-		{
-			var msg_box_blank_iconed = $(document.createElement('div')).addClass('firehint-msg-box')
-					.append($(document.createElement('strong')).addClass('firehint-header'))
-					.append($(document.createElement('div')).addClass('firehint-content-body'));
-
-			$(document).ready(function(){
-				$('#btn_run_with_icon').on('click', function(evt){
-					$(msg_box_blank_iconed).fireHint({
-						elements:{
-							header: [],
-							body:[
-								$(document.createElement('div'))
-									.css({
-										width: '64px',
-										clear: 'right',
-										float: 'left'
-									})
-									.append($(document.createElement('img')).attr('src', 'img/icon-64.png')),
-								$(document.createElement('div'))
-									.css({
-										float: 'left',
-										width: '160px',
-										position: 'relative',
-										top: '2px',
-										padding: '4px 20px',
-										textAlign: 'left'
-									})
-									.append($(document.createElement('strong')).html('STRONG header'))
-									.append($(document.createElement('br')))
-									.append($(document.createElement('span')).html('You can try to write here anything you want'))
-							]
-						},
-						additionalClasses: {
-							'.firehint-msg-box': ['shadowed'+Math.round(Math.random())].concat(Math.round(Math.random()) ? ['box-error'] : ['box-success']),
-							'.firehint-header': Math.round(Math.random()) ? ['box-error-header'] : ['box-success-header']
-						}
-					});
-				});
-			});
-		}
+		});
 	</script>
 </head><body>
-	<!-- GENERAL HINT -->
-	<input id="btn_run" type="button" value="Click for a Hint!" />
-
-	<!-- ICONED HINT -->
-	<input id="btn_run_with_icon" type="button" value="Click for a Hint with ICON" />
+	<div style="text-align:center">
+		<input type="button" class="firehint" value="Run firehint" />
+	</div>
+	<div style="height:700px;"></div>
 </body></html>
 
